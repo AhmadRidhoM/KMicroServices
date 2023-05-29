@@ -1,0 +1,87 @@
+version: '3.4'
+
+networks:
+  backend:
+
+services:
+  productdb:
+    container_name: product-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=P@ssword12345
+    networks:
+      - backend
+    ports:
+      - 8001:1433
+
+  productservice:
+    container_name: product-api
+    image: ${DOCKER_REGISTRY-}productservice
+    build:
+      context: .
+      dockerfile: ProductService/Dockerfile
+    networks:
+       - backend
+    ports:
+       - 8002:80
+    environment:
+       - DB_HOST=productdb
+       - DB_NAME=db_product
+       - DB_SA_PASSWORD=P@ssword12345
+
+  storeservice:
+    container_name: store-api
+    image: ${DOCKER_REGISTRY-}storeservice
+    build:
+      context: .
+      dockerfile: StoreService/Dockerfile
+    networks:
+        - backend
+    ports:
+        - 8003:80
+    environment:
+       - DB_HOST=productdb
+       - DB_NAME=db_store
+       - DB_SA_PASSWORD=P@ssword12345
+
+
+  customerservice:
+    container_name: customer-api
+    image: ${DOCKER_REGISTRY-}customerservice
+    build:
+      context: .
+      dockerfile: CustomerService/Dockerfile
+    networks:
+      - backend
+    ports:
+      -  8004:80
+    environment:
+       - DB_HOST=productdb
+       - DB_NAME=db_customer
+       - DB_SA_PASSWORD=P@ssword12345
+
+
+  marketingservice:
+    container_name: marketingArea-api
+    image: ${DOCKER_REGISTRY-}marketingservice
+    build:
+      context: .
+      dockerfile: MarketingService/Dockerfile
+    networks:
+      - backend
+    ports:
+      - 8005:80
+    environment:
+       - DB_HOST=productdb
+       - DB_NAME=db_store
+       - DB_SA_PASSWORD=P@ssword12345 
+
+
+
+  pricingconfiguration:
+    image: ${DOCKER_REGISTRY-}pricingconfiguration
+    build:
+      context: .
+      dockerfile: PricingConfiguration/Dockerfile
+
