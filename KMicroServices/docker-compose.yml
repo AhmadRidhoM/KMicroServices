@@ -85,3 +85,20 @@ services:
       context: .
       dockerfile: PricingConfiguration/Dockerfile
 
+
+  pricingconfigservice:
+    container_name: pricingConfig-api
+    image: ${DOCKER_REGISTRY-}pricingconfigservice
+    build:
+      context: .
+      dockerfile: PricingConfigService/Dockerfile
+    networks :
+      - backend
+    ports:
+      - 8006:80
+    environment:
+       - DB_HOST=productdb
+       - DB_NAME=db_store
+       - DB_SA_PASSWORD=P@ssword12345 
+
+

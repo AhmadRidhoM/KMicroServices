@@ -34,3 +34,10 @@ services:
     ports:
       - "80"
 
+
+  pricingconfigservice:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
